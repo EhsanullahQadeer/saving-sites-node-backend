@@ -1,0 +1,169 @@
+
+openapi: 3.1.0
+info:
+  title: Savingssites API
+  description: API for managing zones, deals, businesses, and users on the Savingssites platform.
+  version: 1.0.0
+servers:
+  - url: https://api.savingssites.com
+    description: Production server
+paths:
+  /zones:
+    get:
+      summary: Retrieve available zones
+      operationId: getZones
+      responses:
+        200:
+          description: A list of zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Zone'
+        400:
+          $ref: '#/components/responses/BadRequest'
+
+  /{zone}/deals/suggested/:
+    get:
+      summary: Retrieve suggested deals for a specific zone
+      operationId: getSuggestedDeals
+      parameters:
+        - name: zone
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: A list of suggested deals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deal'
+        400:
+          $ref: '#/components/responses/BadRequest'
+
+  /{zone}/deals/approved/:
+    get:
+      summary: Retrieve approved deals for a specific zone
+      operationId: getApprovedDeals
+      parameters:
+        - name: zone
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: A list of approved deals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deal'
+        400:
+          $ref: '#/components/responses/BadRequest'
+
+  /users/{type}/:
+    get:
+      summary: Manage user profiles by type
+      operationId: getUsersByType
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [residents, business, nonprofit, local-employee, visitor, sponsor]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: User profile details for the specified type
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        400:
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  schemas:
+    Zone:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+
+    Deal:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [suggested, approved]
+
+    Business:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        zone:
+          type: string
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        type:
+          type: string
+          enum: [resident, business, nonprofit, local_employee, visitor, sponsor]
+
+    Resident:
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            residencyProof:
+              type: string
+              description: Proof of residency document URL
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

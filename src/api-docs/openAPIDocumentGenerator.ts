@@ -1,20 +1,16 @@
-import { OpenAPIRegistry, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
-
-import { healthCheckRegistry } from "@/api/healthCheck/healthCheckRouter";
-
+import swaggerJsdoc from 'swagger-jsdoc';
+import path from "path";
 export function generateOpenAPIDocument() {
-  const registry = new OpenAPIRegistry([healthCheckRegistry]);
-  const generator = new OpenApiGeneratorV3(registry.definitions);
-
-  return generator.generateDocument({
-    openapi: "3.0.0",
-    info: {
-      version: "1.0.0",
-      title: "Swagger API",
+  const options = {
+    definition: {
+      openapi: '3.1.0',
+      info: {
+        title: "Savingsites's API documentation",
+        version: '1.0.0',
+        description: 'API documentation for the savingsites project',
+      },
     },
-    externalDocs: {
-      description: "View the raw OpenAPI Specification in JSON format",
-      url: "/swagger.json",
-    },
-  });
+    apis: ["src/api/**/*.ts", "src/api/schemas/*.yaml"]
+  };
+  return swaggerJsdoc(options);
 }
