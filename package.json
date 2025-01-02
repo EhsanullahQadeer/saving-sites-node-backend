@@ -14,8 +14,7 @@
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
     "format": "biome format src/",
-    "test": "vitest run",
-    "prepare": "husky"
+    "test": "vitest run"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -54,15 +53,5 @@
     "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}": [
       "biome check --apply --no-errors-on-unmatched"
     ]
-  },
-  "tsup": {
-    "entry": [
-      "src",
-      "!src/**/__tests__/**",
-      "!src/**/*.test.*"
-    ],
-    "splitting": false,
-    "sourcemap": true,
-    "clean": true
   }
 }
