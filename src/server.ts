@@ -27,7 +27,7 @@ app.use(rateLimiter);
 app.use(requestLogger);
 
 // Add routes to app
-app.use(routes);
+app.use("/api/v1", routes);
 
 // Swagger UI
 app.use(openAPIRouter);

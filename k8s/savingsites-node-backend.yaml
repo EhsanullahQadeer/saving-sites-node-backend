@@ -1,0 +1,51 @@
+##################################################################################################
+# Savingsites Node Backend Service
+##################################################################################################
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: savingsites-node-backend
+  labels:
+    app: savingsites-node-backend
+    service: savingsites-node-backend
+spec:
+  ports:
+  - port: 5000
+    name: http
+  selector:
+    app: savingsites-node-backend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: savingsites-node-backend
+  labels:
+    account: savingsites-node-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: savingsites-node-backend-v1
+  labels:
+    app: savingsites-node-backend
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: savingsites-node-backend
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: savingsites-node-backend
+        version: v1
+    spec:
+      serviceAccountName: savingsites-node-backend-service-account
+      containers:
+      - name: savingsites-node-backend
+        image: tipsmarketingservices/savingsites-node-backend:latest 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
